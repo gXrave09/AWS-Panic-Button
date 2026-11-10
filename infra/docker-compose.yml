@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  localstack:
+    container_name: "localstack-main"
+    image: localstack/localstack:latest
+    ports:
+      - "127.0.0.1:4566:4566" # LocalStack Gateway & Web Console
+      - "127.0.0.1:4510-4559:4510-4559" # External service port range
+    environment:
+      - LOCALSTACK_AUTH_TOKEN=ls-dIwoQABi-rulo-fEZo-7958-5507vILaa744
+      - SERVICES=s3,lambda,apigateway,sns,cloudwatch,iam,ec2,sqs,dynamodb
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_DEFAULT_REGION=us-east-1
+      - PERSISTENCE=1
+    volumes:
+      - "./volume:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./init_resources.sh:/etc/localstack/init/ready.d/init_resources.sh"
+      - "..:/workspace"
+    networks:
+      - localstack-net
+
+networks:
+  localstack-net:
+    driver: bridge

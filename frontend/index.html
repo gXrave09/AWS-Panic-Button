@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panic Button · AWS Incident Response</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <div class="brand">
+        <h1 class="brand-title">AWS Panic Button</h1>
+      </div>
+      <div id="master-status-pill" class="status-pill status-pill-danger">
+        <span id="master-status-text">Publicly Exposed</span>
+      </div>
+    </header>
+
+    <!-- Main Command Console -->
+    <main class="panel">
+
+      <!-- Master Action Bar -->
+      <section class="master-section">
+        <div class="master-info">
+          <h2>Emergency Containment</h2>
+          <p>Instantly revoke public access, stop compute instances, and dispatch incident alerts.</p>
+        </div>
+        <div class="master-actions">
+          <button id="enable-lockdown-btn" class="btn btn-lockdown">
+            Enable Lockdown
+          </button>
+          <button id="disable-lockdown-btn" class="btn btn-restore">
+            Restore Services
+          </button>
+        </div>
+      </section>
+
+      <!-- Connected Resources Section -->
+      <section class="services-section">
+        <div class="section-label">Connected Resources</div>
+        
+        <div class="resource-list">
+          
+          <!-- S3 Row -->
+          <div class="resource-row">
+            <div class="resource-meta">
+              <span class="resource-type">S3</span>
+              <div class="resource-details">
+                <span class="resource-title">confidential-company-data</span>
+                <span class="resource-subtitle">customer_records_2026.csv</span>
+              </div>
+            </div>
+            <div class="resource-status-wrap">
+              <span id="s3-status-badge" class="badge badge-danger">Exposed</span>
+            </div>
+            <div class="resource-action-wrap">
+              <button id="s3-toggle-btn" class="btn-subtle btn-subtle-danger">
+                Block Access
+              </button>
+            </div>
+          </div>
+
+          <!-- EC2 Row -->
+          <div class="resource-row">
+            <div class="resource-meta">
+              <span class="resource-type">EC2</span>
+              <div class="resource-details">
+                <span class="resource-title">Compute Fleet</span>
+                <span id="ec2-status-label" class="resource-subtitle">2 Instances (Active)</span>
+              </div>
+            </div>
+            <div class="resource-status-wrap">
+              <span id="ec2-status-badge" class="badge badge-danger">Running</span>
+            </div>
+            <div class="resource-action-wrap">
+              <button id="ec2-toggle-btn" class="btn-subtle btn-subtle-danger">
+                Stop Fleet
+              </button>
+            </div>
+          </div>
+
+          <!-- SNS Row -->
+          <div class="resource-row">
+            <div class="resource-meta">
+              <span class="resource-type">SNS</span>
+              <div class="resource-details">
+                <span class="resource-title">security-incident-alerts</span>
+                <span id="sns-status-label" class="resource-subtitle">Incident Notification Topic</span>
+              </div>
+            </div>
+            <div class="resource-status-wrap">
+              <span id="sns-status-badge" class="badge badge-neutral">Standby</span>
+            </div>
+            <div class="resource-action-wrap">
+              <button id="sns-toggle-btn" class="btn-subtle">
+                Dispatch Alert
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Public Access Verification -->
+      <section class="verify-section">
+        <div class="verify-top">
+          <div class="section-label">Public Access Verification</div>
+          <button id="refresh-btn" class="btn-ghost" title="Re-query S3 endpoint">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+            </svg>
+            Re-test
+          </button>
+        </div>
+
+        <div class="url-bar">
+          <span class="url-method">GET</span>
+          <a href="http://localhost:4566/confidential-company-data/customer_records_2026.csv" id="verify-url" class="url-text" target="_blank" rel="noopener">
+            http://localhost:4566/confidential-company-data/customer_records_2026.csv
+          </a>
+          <span id="http-code-badge" class="badge badge-danger">200 OK Leaking</span>
+        </div>
+
+        <div class="preview-box">
+          <pre id="preview-content" class="preview-code">Querying S3 endpoint (port 4566)...</pre>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Danger Confirmation Modal -->
+    <div id="danger-modal" class="modal-overlay hidden">
+      <div class="modal-box">
+        <div class="modal-head">
+          <div class="modal-icon">⚠️</div>
+          <div>
+            <h3>Restore Public Access?</h3>
+            <p>This operation will disable security containment on your cloud resources.</p>
+          </div>
+        </div>
+
+        <div class="modal-info">
+          <ul>
+            <li><strong>S3 Data:</strong> Public read access to customer records will be reinstated.</li>
+            <li><strong>Access Controls:</strong> S3 Public Access Block settings will be removed.</li>
+            <li><strong>Compute:</strong> Stopped EC2 instances will be powered back on.</li>
+          </ul>
+        </div>
+
+        <div class="modal-footer">
+          <button id="cancel-disable-btn" class="btn btn-secondary">Cancel</button>
+          <button id="confirm-disable-btn" class="btn btn-danger-solid">Confirm & Restore</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

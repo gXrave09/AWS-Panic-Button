@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f3ff"/>
+      <stop offset="100%" stop-color="#ff0055"/>
+    </linearGradient>
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff1a53"/>
+      <stop offset="100%" stop-color="#b30030"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Shield Outline -->
+  <path d="M50 8 L85 24 V52 C85 74 50 92 50 92 C50 92 15 74 15 52 V24 L50 8 Z" 
+        stroke="url(#shieldGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="#0d1117" filter="url(#glow)"/>
+
+  <!-- Inner Circuit Traces -->
+  <path d="M50 18 L75 30 V50 C75 66 50 80 50 80 C50 80 25 66 25 50 V30 L50 18 Z" 
+        stroke="#1f293d" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+
+  <!-- Core Panic Beacon (Minimalist Hexagon / Circle) -->
+  <circle cx="50" cy="50" r="16" fill="url(#coreGrad)" stroke="#ff4d79" stroke-width="2" />
+  <circle cx="50" cy="50" r="22" stroke="#ff0055" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6"/>
+
+  <!-- Lightning Containment Bolt -->
+  <path d="M52 38 L43 51 H50 L47 62 L58 48 H51 L54 38 Z" fill="#ffffff"/>
+
+  <!-- Telemetry Corner Nodes -->
+  <circle cx="50" cy="8" r="2.5" fill="#00f3ff"/>
+  <circle cx="15" cy="24" r="2" fill="#00f3ff"/>
+  <circle cx="85" cy="24" r="2" fill="#ff0055"/>
+</svg>
