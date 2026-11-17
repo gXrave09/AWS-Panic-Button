@@ -91,7 +91,7 @@ class TestIncidentResponsePlaybook(unittest.TestCase):
         self.assertEqual(response["statusCode"], 200)
 
         payload = json.loads(response["body"])
-        self.assertEqual(payload["target_bucket"], "confidential-company-data")
+        self.assertEqual(payload["target_bucket"], "confidential-company-data-2503a52928")
         self.assertTrue(payload["success"])
 
     @patch("lambda_function.get_boto_client")

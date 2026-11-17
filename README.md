@@ -1,6 +1,6 @@
 # Product No. 37: Incident Response Panic Button
 > **Automated Cloud Incident Response Playbook for AWS & LocalStack**  
-> *Batch 41 & 42 • Team Project*
+> *Cloud Computing Project*
 
 ---
 
@@ -15,23 +15,19 @@
 
 | Port / Address | Service / Purpose | What You Can Inspect Here |
 | :--- | :--- | :--- |
-| **`http://localhost:8000`** | **Web Console & Dev Server** | Clean containment UI, lockdown trigger, and live public access inspector. |
-| **`http://localhost:8000/verify-access`** | **Verification Probe Endpoint** | Returns live JSON indicating whether public access is allowed (200) or denied (403). |
+| **`http://localhost:8080`** *(or `8000`)* | **Web Console & Dev Server** | Clean containment UI, lockdown trigger, and live public access inspector. |
+| **`http://localhost:8080/verify-access`** | **Verification Probe Endpoint** | Returns live JSON indicating whether public access is allowed (200) or denied (403). |
 | **`http://localhost:4566`** | **LocalStack Edge Gateway** | Emulates AWS Cloud services (S3, Lambda, API Gateway, SNS, IAM, CloudWatch). |
 | **`http://localhost:4566/_localstack/health`** | **LocalStack Healthcheck** | Inspects operational status of all active AWS services. |
 | **`4510-4559`** | **LocalStack Service Ports** | Dynamically allocated ports for external AWS service bindings. |
 
 ---
 
-## 👥 Team Roles & Responsibilities
+## 👤 Project Credits & Developer Details
 
-| Member Name | Hall Ticket No | Role & Deliverables |
+| Developer Name | Hall Ticket No | Role & Deliverables |
 | :--- | :---: | :--- |
-| **Ch. Yogi** | `2503A51208` | **Frontend & UI** — Minimalist incident console and live lockdown verification panel. |
-| **V. Sri Charan** | `2503A51218` | **Backend & API Orchestration** — API Gateway endpoint routing and verification endpoints. |
-| **G. Saketha Vardhan** | `2503A51223` | **Remediation & Incident Automation** — Python 3 & Boto3 Lambda playbook execution. |
-| **G. Bala Aditya Reddy** | `2503A51226` | **Cloud Infrastructure & IAM** — LocalStack environment, Docker config, and SNS alert topics. |
-| **P. Jashwanth Rao** | `2503A51234` | **Testing & Validation** — Automated test suite and SLA benchmarks. |
+| **Gaurav Kumar** | `2503A52928` | **Full-Stack Cloud & Incident Response Lead** — End-to-end implementation (SecOps Console UI, API Gateway & Dev Server, Python/Boto3 Lambda Remediation Playbook, LocalStack Cloud Architecture, and Automated Test Suite). |
 
 ---
 
@@ -75,14 +71,14 @@ sequenceDiagram
 ```bash
 python3 backend/mock_server.py
 ```
-Open **`http://localhost:8000`** in your browser.
+Open **`http://localhost:8080`** in your browser.
 
 ### Step 2: Observe the Exposed State (Before Lockdown)
 * Look at the **Lockdown Verification** card at the bottom.
 * It shows **`200 OK · Publicly Accessible`** with a preview of the customer records.
 * You can also verify via terminal:
   ```bash
-  curl -i http://localhost:8000/verify-access
+  curl -i http://localhost:8080/verify-access
   ```
 
 ### Step 3: Trigger Emergency Lockdown
@@ -95,29 +91,35 @@ Open **`http://localhost:8000`** in your browser.
 * The response payload immediately switches to `<Code>AccessDenied</Code>`.
 * Confirm via terminal:
   ```bash
-  curl -i http://localhost:8000/verify-access
+  curl -i http://localhost:8080/verify-access
   ```
   *(Returns `403 Forbidden` proof)*
 
 ---
 
-### Running with Docker LocalStack (Full AWS Stack)
-To run against a containerized LocalStack instance on Port 4566:
+### Running with LocalStack Locally & Docker for EC2
+The server boots both the local AWS compatibility engine (port 4566) and the live EC2 Docker container (port 9345) automatically:
 
-1. Start LocalStack:
+1. **Start the Environment & Console:**
    ```bash
-   cd infra
-   docker compose up -d
+   python backend/mock_server.py
    ```
-2. Provision cloud resources:
-   ```bash
-   ./init_resources.sh
-   ```
-3. Test unauthenticated access directly against port 4566:
+2. **Access the Console:**
+   Open **`http://localhost:8080`** (or the port displayed in terminal) in your browser.
+3. **Connect to the EC2 Instance (Port 9345):**
+   * PowerShell: `.\connect_ec2.ps1`
+   * Command Prompt: `connect_ec2.cmd`
+   * Bash / Linux / macOS: `./connect_ec2.sh`
+4. **View Live SNS Incident Alerts:**
+   * Python: `python read_sns.py`
+   * PowerShell: `.\read_sns.ps1`
+   * Bash: `./read_sns.sh`
+5. **Inspect Public S3 Access Directly:**
+   * Before lockdown: returns `200 OK`
+   * After lockdown: returns `403 Forbidden` (`AccessDenied`)
    ```bash
    curl -i http://localhost:4566/confidential-company-data/customer_records_2026.csv
    ```
-   *(Returns `403 Forbidden` once the panic button runs)*
 
 ---
 

@@ -2,7 +2,7 @@
   'use strict';
 
   const isFileOrigin = window.location.protocol === 'file:';
-  const API_BASE = isFileOrigin ? 'http://localhost:8000' : '';
+  const API_BASE = isFileOrigin ? 'http://localhost:8080' : '';
 
   // Header Elements
   const masterStatusPill = document.getElementById('master-status-pill');
@@ -39,14 +39,13 @@
   async function checkSystemState() {
     let data = null;
     try {
-      const controller = new AbortController();
-      const id = setTimeout(() => controller.abort(), 2000);
-      const res = await fetch(`${API_BASE}/verify-access`, { signal: controller.signal });
-      clearTimeout(id);
+      const res = await fetch(`${API_BASE}/verify-access`);
       if (res.ok) {
         data = await res.json();
       }
-    } catch (_) {}
+    } catch (err) {
+      console.warn('verify-access error:', err);
+    }
 
     if (!data) return;
 
@@ -132,8 +131,8 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          target_bucket: 'confidential-company-data',
-          operator: 'Console',
+          target_bucket: 'confidential-company-data-2503a52928',
+          operator: 'Gaurav Kumar (2503A52928)',
           reason: 'Emergency lockdown triggered'
         })
       });

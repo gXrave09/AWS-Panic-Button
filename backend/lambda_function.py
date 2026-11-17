@@ -16,6 +16,9 @@ import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
 
+os.environ.setdefault("AWS_DEFAULT_REGION", "us-east-1")
+os.environ.setdefault("AWS_EC2_METADATA_DISABLED", "true")
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -34,18 +37,21 @@ localstack_host = os.environ.get("LOCALSTACK_HOSTNAME")
 if localstack_host and "localhost" in AWS_ENDPOINT_URL:
     AWS_ENDPOINT_URL = AWS_ENDPOINT_URL.replace("localhost", localstack_host)
 
-TARGET_BUCKET_NAME = os.environ.get("TARGET_BUCKET_NAME", "confidential-company-data")
+TARGET_BUCKET_NAME = os.environ.get("TARGET_BUCKET_NAME", "confidential-company-data-2503a52928")
 SNS_TOPIC_ARN = os.environ.get("SNS_TOPIC_ARN", "")
 AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
 
 
 def get_boto_client(service_name):
-    """Returns a boto3 client configured with LocalStack or AWS endpoints."""
+    """Returns a boto3 client configured for real AWS or LocalStack."""
     if boto3 is None:
         raise RuntimeError("boto3 is not installed in the current environment.")
     kwargs = {"region_name": AWS_REGION}
-    if AWS_ENDPOINT_URL:
+    if AWS_ENDPOINT_URL and "localhost" in AWS_ENDPOINT_URL:
         kwargs["endpoint_url"] = AWS_ENDPOINT_URL
+        if "AWS_ACCESS_KEY_ID" not in os.environ:
+            kwargs["aws_access_key_id"] = "test"
+            kwargs["aws_secret_access_key"] = "test"
     return boto3.client(service_name, **kwargs)
 
 

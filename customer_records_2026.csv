@@ -1,0 +1,4 @@
+id,customer_name,ssn,account_balance
+101,John Doe,XXX-XX-1234,$54,200.00
+102,Jane Smith,XXX-XX-5678,$82,450.00
+103,Robert Johnson,XXX-XX-9012,$128,900.00
