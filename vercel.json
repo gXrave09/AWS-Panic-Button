@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/verify-access", "destination": "/api/index.py" },
+    { "source": "/panic", "destination": "/api/index.py" },
+    { "source": "/reset", "destination": "/api/index.py" },
+    { "source": "/toggle/:path*", "destination": "/api/index.py" },
+    { "source": "/sns-messages", "destination": "/api/index.py" }
+  ]
+}
